@@ -18,20 +18,20 @@ async function run() {
   const resultsRef = await faceapi.detectAllFaces(referenceImage, faceDetectionOptions)
     .withFaceLandmarks()
     .withFaceDescriptors()
-  console.log(resultsRef);
 
   const resultsQuery = await faceapi.detectAllFaces(queryImage, faceDetectionOptions)
     .withFaceLandmarks()
     .withFaceDescriptors()
-  console.log(resultsQuery);
 
-  fs.writeFileSync('ref.json',JSON.stringify(resultsRef) );
-  fs.writeFileSync('query.json',JSON.stringify(resultsQuery) );
 
   const faceMatcher = new faceapi.FaceMatcher(resultsRef)
 
   const labels = faceMatcher.labeledDescriptors
-    .map(ld => ld.label)
+    .map(ld => {
+      console.log(ld);
+      return ld.label;
+    })
+  console.log(labels)
   const refDrawBoxes = resultsRef
     .map(res => res.detection.box)
     .map((box, i) => new faceapi.draw.DrawBox(box, { label: labels[i] }))
